@@ -32,9 +32,9 @@ func (m WordModel) Insert(word *Word) error {
 
 func (m WordModel) GetByWord(word string) ([]*Word, error) {
 	query := `
-		SELECT id, word, word_type, definition
-		FROM words
-		WHERE LOWER(word) = LOWER($1)`
+		select id, word, word_type, definition
+		from words
+		where lower(word) = lower($1)`
 
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()

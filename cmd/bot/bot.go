@@ -23,7 +23,9 @@ func (app *application) startBot() error {
 	b.Use(app.recoverPanic)
 	b.Use(app.rateLimit)
 
-	app.handleWord(b)
+	app.showWordDesc(b)
+	app.listUserWords(b)
+	app.handleStartBot(b)
 
 	b.Start()
 	return nil
