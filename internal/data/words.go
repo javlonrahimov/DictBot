@@ -118,3 +118,31 @@ func (m WordModel) AddForUser(userID int64, wordId int64) error {
 	_, err := m.DB.ExecContext(ctx, query, userID, wordId)
 	return err
 }
+
+func (m WordModel) GetRandomForUser(userId int64) (*Word, error) {
+	query := `
+	SELECT words.id, words.word, words.word_type, word.definition
+	FROM words
+	INNER JOIN users_words 
+	ON users_words.word_id = words.id
+	INNER JOIN users
+	ON users_words.user_id = users.id
+	WHERE users.id = $1 && random() < 0.01 limit 1`
+
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
+	row, err := m.DB.QueryContext(ctx, query, userId)
+	if err != nil {
+		return nil, err
+	}
+
+	var word Word
+
+	err = row.Scan(&word.ID, &word.Word, &word.WordType, &word.Definition)
+	if err != nil {
+		return nil, err
+	}
+
+	return &word, nil
+}
