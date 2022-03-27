@@ -44,3 +44,7 @@ func (app *application) NewLine(count int) string {
 func (app *application) Clean(s, del string) string {
 	return strings.ReplaceAll(s, del, "")
 }
+
+func (app *application) Hashtag(s string) string {
+	return fmt.Sprintf("#%s", s)
+}

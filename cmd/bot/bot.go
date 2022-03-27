@@ -26,6 +26,7 @@ func (app *application) startBot() error {
 	app.showWordDesc(b)
 	app.listUserWords(b)
 	app.handleStartBot(b)
+	app.clearUserWords(b)
 
 	b.Start()
 	return nil

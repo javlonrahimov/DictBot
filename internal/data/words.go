@@ -7,7 +7,7 @@ import (
 )
 
 type Word struct {
-	ID         int64 `json:"id"`
+	ID         int64  `json:"id"`
 	Word       string `json:"word"`
 	WordType   string `json:"word_type"`
 	Definition string `json:"definition"`
@@ -70,7 +70,7 @@ func (m WordModel) GetByWord(word string) ([]*Word, error) {
 
 func (m WordModel) GetAllForUser(userId int64) ([]Word, error) {
 	query := `
-	SELECT words.id, words.word, words.word_type, word.definition
+	SELECT words.id, words.word, words.word_type, words.definition
 	FROM words
 	INNER JOIN users_words 
 	ON users_words.word_id = words.id
@@ -145,4 +145,14 @@ func (m WordModel) GetRandomForUser(userId int64) (*Word, error) {
 	}
 
 	return &word, nil
+}
+
+func (m WordModel) ClearUserWords(userId int64) error {
+	query := `
+	delete from users_words
+	where user_id = $1`
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+	_, err := m.DB.ExecContext(ctx, query, userId)
+	return err
 }
